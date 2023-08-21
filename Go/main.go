@@ -38,6 +38,7 @@ func main() {
 	client, _ = mongo.Connect(context.Background(), clientOptions)
 	tokenCollection = client.Database("newdb").Collection("tokens")
 
+	// Роуты
 	r := mux.NewRouter()
 	r.HandleFunc("/get-tokens", GetTokensHandler).Methods("GET")
 	r.HandleFunc("/refresh-tokens", RefreshTokensHandler).Methods("POST")
