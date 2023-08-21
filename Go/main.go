@@ -16,7 +16,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var jwtSecret = []byte("GLgC9u_9jgeX6b3MrkDcIFrU7NCA_UotUl8-TVDiSvKKCJXYvGdbG-YBd0sMWiBOtUiYNy6bSwIJCXj-1ga3Fg")
+var key = []byte("GLgC9u_9jgeX6b3MrkDcIFrU7NCA_UotUl8-TVDiSvKKCJXYvGdbG-YBd0sMWiBOtUiYNy6bSwIJCXj-1ga3Fg")
 
 type TokenPair struct {
 	AccessToken  string `json:"access_token"`
@@ -55,7 +55,7 @@ func GetTokensHandler(w http.ResponseWriter, r *http.Request) {
 	accessClaims := accessToken.Claims.(jwt.MapClaims)
 	accessClaims["user_id"] = userID
 	accessClaims["exp"] = time.Now().Add(time.Hour * 1).Unix() // Срок действия 1 час
-	accessString, _ := accessToken.SignedString(jwtSecret)
+	accessString, _ := accessToken.SignedString(key)
 
 	// Создание Refresh токена
 	refreshToken := generateRefreshToken(userID)
@@ -112,7 +112,7 @@ func RefreshTokensHandler(w http.ResponseWriter, r *http.Request) {
 	accessClaims := accessToken.Claims.(jwt.MapClaims)
 	accessClaims["user_id"] = refreshTokenData.UserID
 	accessClaims["exp"] = time.Now().Add(time.Hour * 1).Unix() // Срок действия 1 час
-	accessString, _ := accessToken.SignedString(jwtSecret)
+	accessString, _ := accessToken.SignedString(key)
 
 	tokenPair := TokenPair{
 		AccessToken:  accessString,
